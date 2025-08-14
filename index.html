@@ -2,45 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaikai Z | Personal Website</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Scientific Conversion Toolbox</title>
+    <!-- Include math.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.9.0/math.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 600px;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        input, select, button {
+            margin: 5px;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .row {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Kaikai Z</h1>
-        <nav>
-            <a href="#about">About</a>
-            <a href="#projects">Projects</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </header>
- 
-    <section id="about">
-        <h2>About Me</h2>
-        <p>Hello! I'm Kaikai, a laser optical engineer and tech enthusiast. I enjoy building projects, learning new technologies, and exploring science.</p>
-    </section>
- 
-    <section id="projects">
-        <h2>Projects</h2>
-        <ul>
-            <li><a href="https://github.com/yourusername/project1">Project 1</a></li>
-            <li><a href="https://github.com/yourusername/project2">Project 2</a></li>
-            <li><a href="https://github.com/yourusername/project3">Project 3</a></li>
-        </ul>
-    </section>
- 
-    <section id="contact">
-        <h2>Contact</h2>
-        <p>Email: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
-        <p>GitHub: <a href="https://github.com/yourusername">github.com/yourusername</a></p>
-    </section>
- 
-    <footer>
-        <p>&copy; 2025 Kaikai Z</p>
-    </footer>
- 
-    <script src="script.js"></script>
+    <h1>Scientific Conversion Toolbox</h1>
+    <h2>Convert Units & Evaluate Expressions</h2>
+
+    <div class="row">
+        <label for="category">Category:</label>
+        <select id="category" onchange="updateUnits()">
+            <option value="length">Length</option>
+            <option value="mass">Mass</option>
+            <option value="energy">Energy</option>
+            <option value="time">Time</option>
+            <option value="temperature">Temperature</option>
+        </select>
+    </div>
+
+    <div class="row">
+        <label for="inputValue">Value / Expression:</label>
+        <input type="text" id="inputValue" placeholder="e.g., 10, 2*3, 5e3">
+    </div>
+
+    <div class="row">
+        <label for="inputUnit">From unit:</label>
+        <select id="inputUnit"></select>
+
+        <label for="outputUnit">To unit:</label>
+        <select id="outputUnit"></select>
+    </div>
+
+    <div class="row">
+        <button onclick="convert()">Convert</button>
+    </div>
+
+    <p id="result">Result will appear here</p>
+
+    <script>
+        // Define units for each category
+        const units = {
+            length: ['m', 'km', 'cm', 'mm', 'ft', 'in', 'mi', 'yd'],
+            mass: ['kg', 'g', 'mg', 'lb', 'oz'],
+            energy: ['J', 'kJ', 'cal', 'kcal', 'eV'],
+            time: ['s', 'min', 'h', 'day'],
+            temperature: ['degC', 'degF', 'K']
+        };
+
+        // Physics constants
+        const constants = {
+            c: 299792458, // speed of light m/s
+            G: 6.67430e-11, // gravitational constant m^3/kg/s^2
+            h: 6.62607015e-34 // Planck constant J·s
+        };
+
+        // Populate unit dropdowns
+        function updateUnits() {
+            const category = document.getElementById('category').value;
+            const inputUnit = document.getElementById('inputUnit');
+            const outputUnit = document.getElementById('outputUnit');
+
+            inputUnit.innerHTML = '';
+            outputUnit.innerHTML = '';
+            units[category].forEach(u => {
+                inputUnit.innerHTML += `<option value="${u}">${u}</option>`;
+                outputUnit.innerHTML += `<option value="${u}">${u}</option>`;
+            });
+        }
+
+        // Initial populate
+        updateUnits();
+
+        function convert() {
+            const valStr = document.getElementById('inputValue').value;
+            const fromUnit = document.getElementById('inputUnit').value;
+            const toUnit = document.getElementById('outputUnit').value;
+            const resultElement = document.getElementById('result');
+
+            try {
+                // Evaluate expressions with constants
+                const scope = {...constants};
+                const value = math.evaluate(valStr, scope);
+
+                // Create a math.js unit and convert
+                let result;
+                if (fromUnit && toUnit) {
+                    const input = math.unit(value, fromUnit);
+                    result = input.to(toUnit);
+                } else {
+                    result = value;
+                }
+
+                resultElement.textContent = `${valStr} ${fromUnit} = ${result.toString()}`;
+            } catch (err) {
+                resultElement.textContent = `Error: ${err.message}`;
+            }
+        }
+    </script>
 </body>
 </html>
 
