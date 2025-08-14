@@ -2,35 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Laser Parameter Converter</title>
+    <title>Laser Parameter Calculator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Laser Parameter Converter</h1>
-    <h2>Wavelength, Frequency, Energy, Pulse Duration</h2>
+    <h1>Laser Parameter Calculator</h1>
 
-    <div class="row">
-        <label for="paramType">Conversion Type:</label>
-        <select id="paramType" onchange="updateUnits()">
-            <option value="wavelength_freq">Wavelength ↔ Frequency</option>
-            <option value="wavelength_energy">Wavelength ↔ Photon Energy</option>
-            <option value="pulse_bandwidth">Pulse Duration ↔ Bandwidth</option>
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event,'Wavelength')">Wavelength</button>
+        <button class="tablinks" onclick="openTab(event,'Pulse')">Pulse</button>
+        <button class="tablinks" onclick="openTab(event,'SFG_DFG')">SFG/DFG</button>
+        <button class="tablinks" onclick="openTab(event,'OPO')">OPO</button>
+    </div>
+
+    <!-- Wavelength ↔ Frequency ↔ Energy -->
+    <div id="Wavelength" class="tabcontent">
+        <h2>Wavelength ↔ Frequency ↔ Photon Energy</h2>
+        <label>Input Value:</label>
+        <input type="number" id="wl_inputValue">
+        <label>Input Unit:</label>
+        <select id="wl_inputUnit">
+            <option value="nm">nm</option>
+            <option value="THz">THz</option>
+            <option value="eV">eV</option>
         </select>
+        <label>Output Unit:</label>
+        <select id="wl_outputUnit">
+            <option value="nm">nm</option>
+            <option value="THz">THz</option>
+            <option value="eV">eV</option>
+        </select>
+        <button onclick="convertWavelength()">Convert</button>
+        <p id="wl_result"></p>
     </div>
 
-    <div class="row">
-        <label for="inputValue">Input Value:</label>
-        <input type="number" id="inputValue" placeholder="e.g., 800">
+    <!-- Pulse Duration ↔ Bandwidth -->
+    <div id="Pulse" class="tabcontent">
+        <h2>Pulse Duration ↔ Bandwidth</h2>
+        <label>Pulse Duration (fs):</label>
+        <input type="number" id="pulse_duration">
+        <button onclick="convertPulse()">Calculate Bandwidth (THz)</button>
+        <p id="pulse_result"></p>
     </div>
 
-    <div class="row">
-        <label for="inputUnit">Input Unit:</label>
-        <select id="inputUnit"></select>
-
-        <label for="outputUnit">Output Unit:</label>
-        <select id="outputUnit"></select>
+    <!-- SFG / DFG -->
+    <div id="SFG_DFG" class="tabcontent">
+        <h2>Sum/Difference Frequency Generation</h2>
+        <label>Pump Wavelength (nm):</label>
+        <input type="number" id="sfg_pump">
+        <label>Signal Wavelength (nm):</label>
+        <input type="number" id="sfg_signal">
+        <button onclick="calculateSFG()">SFG Wavelength</button>
+        <button onclick="calculateDFG()">DFG Wavelength</button>
+        <p id="sfg_result"></p>
     </div>
 
-    <div class="row">
-        <button onclick="convertLa
+    <!-- OPO -->
+    <div id="OPO" class="tabcontent">
+        <h2>Optical Parametric Oscillator (OPO)</h2>
+        <label>Pump Wavelength (nm):</label>
+        <input type="number" id="opo_pump">
+        <label>Signal Wavelength (nm):</label>
+        <input type="number" id="opo_signal">
+        <button onclick="calculateOPO()">Calculate Idler</button>
+        <p id="opo_result"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
 
